@@ -1,0 +1,51 @@
+version: '3.8'
+
+volumes:
+  pg_data_foodgram:
+  static_foodgram:
+  media_foodgram:
+  data_foodgram:
+
+services:
+
+  db_foodgram:
+    image: postgres:13.10
+    container_name: foodgram_db
+    restart: always
+    env_file: .env
+    volumes:
+      - pg_data_foodgram:/var/lib/postgresql/data
+
+  backend:
+    image: matrosovmn/foodgram_backend
+    container_name: foodgram_backend
+    restart: always
+    env_file: .env
+    volumes:
+      - static_foodgram:/app/static/
+      - media_foodgram:/app/media/
+      - data_foodgram:/app/data/
+    depends_on:
+      - db_foodgram
+
+  frontend:
+    image: matrosovmn/foodgram_frontend
+    container_name: foodgram_frontend
+    restart: no
+    volumes:
+      - ../frontend/:/app/result_build/
+
+  nginx:
+    image: nginx:1.24.0
+    container_name: foodgram_gateway
+    restart: always
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - ../frontend/build:/usr/share/nginx/html/
+      - ../docs/:/usr/share/nginx/html/api/docs/
+      - static_foodgram:/var/html/static/
+      - media_foodgram:/var/html/media/
+    depends_on:
+      - backend
+    ports:
+      - 8000:80
