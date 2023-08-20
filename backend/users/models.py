@@ -1,46 +1,48 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+
 from users.validators import validate_username
 
 
 class CustomUser(AbstractUser):
     """Кастомная модель пользователя."""
+
     class Roles(models.TextChoices):
-        USER = 'Пользователь'
-        ADMIN = 'Администратор'
+        USER = "Пользователь"
+        ADMIN = "Администратор"
 
     username = models.CharField(
-        verbose_name='Логин пользователя',
+        verbose_name="Логин пользователя",
         max_length=150,
         unique=True,
-        validators=(validate_username, ),
-        help_text='Введите логин для регистрации, не более 150 символов'
-                  'используя только буквы, цифры и @/./+/-/_ .',
+        validators=(validate_username,),
+        help_text="Введите логин для регистрации, не более 150 символов"
+        "используя только буквы, цифры и @/./+/-/_ .",
     )
     first_name = models.CharField(
-        verbose_name='Имя',
+        verbose_name="Имя",
         max_length=150,
         blank=True,
-        help_text='Введите имя.',
+        help_text="Введите имя.",
     )
     last_name = models.CharField(
-        verbose_name='Фамилия',
+        verbose_name="Фамилия",
         max_length=150,
         blank=True,
-        help_text='Введите фамилию.',
+        help_text="Введите фамилию.",
     )
     email = models.EmailField(
-        verbose_name='Адрес электронной почты',
+        verbose_name="Адрес электронной почты",
         max_length=254,
         unique=True,
         db_index=True,
-        help_text='Введите адрес электронной почты для регистрации.',
+        help_text="Введите адрес электронной почты для регистрации.",
     )
 
     class Meta:
-        verbose_name = 'Пользователь'
-        verbose_name_plural = 'Пользователи'
-        ordering = ('id',)
+        verbose_name = "Пользователь"
+        verbose_name_plural = "Пользователи"
+        ordering = ("id",)
 
     @property
     def is_admin(self):
@@ -56,34 +58,37 @@ class CustomUser(AbstractUser):
 
 class Subscription(models.Model):
     """Модель подписок пользователей друг на друга."""
+
     user = models.ForeignKey(
         CustomUser,
-        verbose_name='Подписчик',
-        related_name='subscriber',
+        verbose_name="Подписчик",
+        related_name="subscriber",
         on_delete=models.CASCADE,
     )
     author = models.ForeignKey(
         CustomUser,
-        verbose_name='Автор',
-        related_name='subscribing',
+        verbose_name="Автор",
+        related_name="subscribing",
         on_delete=models.CASCADE,
     )
     sub_date = models.DateTimeField(
-        'Дата подписки',
+        "Дата подписки",
         auto_now_add=True,
     )
 
     class Meta:
-        verbose_name = 'Подписчик'
-        verbose_name_plural = 'Подписчики'
-        ordering = ('-id',)
+        verbose_name = "Подписчик"
+        verbose_name_plural = "Подписчики"
+        ordering = ("-id",)
         constraints = (
             models.UniqueConstraint(
-                fields=['user', 'author'],
-                name='unique_subscribing',
+                fields=["user", "author"],
+                name="unique_subscribing",
             ),
         )
 
     def __str__(self):
-        return (f'Пользователь {self.user.username} '
-                f'подписан на {self.author.username}')
+        return (
+            f"Пользователь {self.user.username} "
+            f"подписан на {self.author.username}"
+        )

@@ -5,24 +5,37 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
-        ('recipes', '0001_initial'),
+        ("recipes", "0001_initial"),
     ]
 
     operations = [
         migrations.AlterModelOptions(
-            name='tag',
-            options={'ordering': ('-id',), 'verbose_name': 'Тег', 'verbose_name_plural': 'Теги'},
+            name="tag",
+            options={
+                "ordering": ("-id",),
+                "verbose_name": "Тег",
+                "verbose_name_plural": "Теги",
+            },
         ),
         migrations.AlterField(
-            model_name='amountingredient',
-            name='ingredient',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='amount_ingredient', to='recipes.ingredient', verbose_name='Ингредиент'),
+            model_name="amountingredient",
+            name="ingredient",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="amount_ingredient",
+                to="recipes.ingredient",
+                verbose_name="Ингредиент",
+            ),
         ),
         migrations.AlterField(
-            model_name='amountingredient',
-            name='recipe',
-            field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='amount_recipe', to='recipes.recipe', verbose_name='Рецепт'),
+            model_name="amountingredient",
+            name="recipe",
+            field=models.ForeignKey(
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="amount_recipe",
+                to="recipes.recipe",
+                verbose_name="Рецепт",
+            ),
         ),
     ]

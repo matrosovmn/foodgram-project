@@ -6,7 +6,8 @@ from recipes.models import Recipe
 
 class IngredientFilter(SearchFilter):
     """Поиск по названию ингредиента."""
-    search_param = 'name'
+
+    search_param = "name"
 
 
 class RecipeFilter(filters.FilterSet):
@@ -18,17 +19,18 @@ class RecipeFilter(filters.FilterSet):
     - Избранным рецептам пользователя
     - Рецептам в корзине пользователя
     """
-    tags = filters.AllValuesMultipleFilter(field_name='tags__slug')
+
+    tags = filters.AllValuesMultipleFilter(field_name="tags__slug")
     is_favorited = filters.BooleanFilter(
-        field_name='is_favorited',
-        method='filter_favorited')
+        field_name="is_favorited", method="filter_favorited",
+    )
     is_in_cart = filters.BooleanFilter(
-        field_name='is_in_cart',
-        method='filter_in_cart')
+        field_name="is_in_cart", method="filter_in_cart",
+    )
 
     class Meta:
         model = Recipe
-        fields = ('author',)
+        fields = ("author",)
 
     def filter_favorited(self, queryset, name, value):
         """Фильтр по избранным рецептам."""

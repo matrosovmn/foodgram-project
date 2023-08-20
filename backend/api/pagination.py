@@ -5,5 +5,6 @@ from foodgram.settings import PAGE_SIZE
 
 class LimitPageNumberPagination(PageNumberPagination):
     """Пагинация."""
+
     page_size = PAGE_SIZE
-    page_size_query_param = 'limit'
+    page_size_query_param = "limit"
