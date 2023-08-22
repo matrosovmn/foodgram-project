@@ -19,7 +19,7 @@ services:
   backend:
     image: matrosovmn/foodgram_backend
     container_name: foodgram_backend
-    restart: always
+    restart: on-failure
     env_file: .env
     volumes:
       - static_foodgram:/app/static/
