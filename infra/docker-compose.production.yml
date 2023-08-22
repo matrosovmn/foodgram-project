@@ -10,6 +10,7 @@ services:
   db_foodgram:
     image: postgres:13.10
     container_name: foodgram_db
+    restart: always
     env_file: .env
     volumes:
       - pg_data_foodgram:/var/lib/postgresql/data
@@ -17,6 +18,7 @@ services:
   backend:
     image: matrosovmn/foodgram_backend
     container_name: foodgram_backend
+    restart: on-failure
     env_file: .env
     volumes:
       - static_foodgram:/app/static/
@@ -27,6 +29,7 @@ services:
   frontend:
     image: matrosovmn/foodgram_frontend
     container_name: foodgram_frontend
+    restart: no
     volumes:
       - ../frontend/:/app/result_build/
 
