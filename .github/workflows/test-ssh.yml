@@ -1,0 +1,59 @@
+name: Test SSH Connection
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  test_ssh_connection:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check SSH Connection
+        uses: appleboy/ssh-action@master
+        with:
+          host: 130.193.53.215
+          username: yc-user
+          key: -----BEGIN OPENSSH PRIVATE KEY-----
+            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
+            -----END OPENSSH PRIVATE KEY-----
+          passphrase: NRjeSf
+          script: |
+            echo "SSH connection successful"
