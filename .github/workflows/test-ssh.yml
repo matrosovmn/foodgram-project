@@ -15,13 +15,7 @@ jobs:
         with:
           host: 130.193.53.215
           username: yc-user
-          key: -----BEGIN OPENSSH PRIVATE KEY-----
-            b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
-            QyNTUxOQAAACCeEN2YpCy3dxjPwf54fg4zlMsUQH7lbrGCn7qvfi/u4AAAAJjzttoJ87ba
-            CQAAAAtzc2gtZWQyNTUxOQAAACCeEN2YpCy3dxjPwf54fg4zlMsUQH7lbrGCn7qvfi/u4A
-            AAAEA9ozRZ4EaLHdLGlP8qg196K3ZxKUsvYKgzt5pkCz17pp4Q3ZikLLd3GM/B/nh+DjOU
-            yxRAfuVusYKfuq9+L+7gAAAAFG1hdHJvc292bW5AZ21haWwuY29tAQ==
-            -----END OPENSSH PRIVATE KEY-----           
+          key: ${{ secrets.SSH_KEY }}
           passphrase: NRjeSf
           script: |
             echo "SSH connection successful"
