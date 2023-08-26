@@ -2,7 +2,7 @@ import base64
 
 from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
-from djoser.serializers import UserSerializer
+from djoser.serializers import UserCreateSerializer
 from rest_framework import serializers, validators
 
 from recipes.models import (AmountIngredient, Cart, Favorite, Ingredient,
@@ -25,7 +25,7 @@ class Base64ImageField(serializers.ImageField):
         return super().to_internal_value(data)
 
 
-class UserSerializer(UserSerializer):
+class UserSerializer(UserCreateSerializer):
     """Сериализатор для работы с пользователями."""
 
     class Meta:
