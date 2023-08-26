@@ -17,5 +17,6 @@ urlpatterns = [
     path("", include(router_v1.urls)),
     path("", include("djoser.urls")),
     path("auth/", include("djoser.urls.authtoken"), name="signup"),
-    path("users/set_password/", UpdatePasswordView, name="set_password"),
+    path("users/set_password/", UpdatePasswordView.as_view(),
+         name="set_password"),
 ]
