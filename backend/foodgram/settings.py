@@ -112,6 +112,8 @@ CORS_ALLOWED_ORIGINS = [
 ]
 CORS_URLS_REGEX = r'^/api/.*$'
 
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticatedOrReadOnly",
