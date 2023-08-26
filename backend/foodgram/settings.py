@@ -22,6 +22,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework.authtoken",
+    'corsheaders',
     "rest_framework",
     "django_filters",
     "djoser",
@@ -34,11 +35,19 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
+    'corsheaders.middleware.CorsMiddleware',
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
+
+CSRF_TRUSTED_ORIGINS = ["https://zelema.ru"]
+
+CORS_ALLOWED_ORIGINS = [
+    "https://zelema.ru",
+]
+CORS_URLS_REGEX = r'^/api/.*$'
 
 ROOT_URLCONF = "foodgram.urls"
 
@@ -106,13 +115,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 AUTH_USER_MODEL = "users.CustomUser"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
-
-CORS_ALLOWED_ORIGINS = [
-    "https://zelema.ru",
-]
-CORS_URLS_REGEX = r'^/api/.*$'
-
-ACCOUNT_AUTHENTICATION_METHOD = 'email'
 
 REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
