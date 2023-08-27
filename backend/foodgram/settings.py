@@ -42,11 +42,9 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-CSRF_TRUSTED_ORIGINS = ["https://zelema.ru"]
+CSRF_TRUSTED_ORIGINS = ["https://zelema.ru", ]
 
-CORS_ALLOWED_ORIGINS = [
-    "https://zelema.ru",
-]
+CORS_ALLOWED_ORIGINS = ["https://zelema.ru", ]
 CORS_URLS_REGEX = r'^/api/.*$'
 
 ROOT_URLCONF = "foodgram.urls"
