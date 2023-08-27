@@ -2,6 +2,7 @@ version: '3.8'
 
 volumes:
   pg_data_foodgram:
+  data_foodgram:
   static_foodgram:
   media_foodgram:
 
@@ -21,6 +22,7 @@ services:
     restart: on-failure
     env_file: .env
     volumes:
+      - data_foodgram:/app/data/
       - static_foodgram:/app/static/
       - media_foodgram:/app/media/
     depends_on:
