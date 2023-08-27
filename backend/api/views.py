@@ -212,6 +212,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def download_shopping_cart(self, request):
         """Скачивает корзину покупок в виде файла."""
         user = request.user
-        if not user.shopping_cart.exists():
+        if not user.cart.exists():
             return Response(status=status.HTTP_400_BAD_REQUEST)
         return self.create_cart(request)
