@@ -193,7 +193,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
                         "amount": amount,
                     }
                 else:
-                    list[name]["amount"] += amount
+                    items[name]["amount"] += amount
         content = [
             f'{item["name"]} ({item["measurement_unit"]}) - {item["amount"]}\n'
             for item in items.values()
