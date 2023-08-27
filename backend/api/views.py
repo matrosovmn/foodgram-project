@@ -131,7 +131,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     filterset_class = RecipeFilter
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
-    def create_recipe_author(self, serializer):
+    def perform_create(self, serializer):
         """Создает новый рецепт и связывает его с автором."""
         serializer.save(author=self.request.user)
 
