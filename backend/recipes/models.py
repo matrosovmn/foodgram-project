@@ -187,6 +187,7 @@ class Cart(models.Model):
     user = models.ForeignKey(
         User,
         verbose_name="Пользователь списка покупок",
+        related_name="cart",
         on_delete=models.CASCADE,
     )
 
