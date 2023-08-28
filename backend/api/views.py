@@ -139,7 +139,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
         """Добавляет или удаляет рецепт из избранного или списка покупок."""
         recipe = get_object_or_404(Recipe, id=pk)
         if add:
-            model.objects.create(user=user, recipe=recipe)
+            model.objects.get_or_create(user=user, recipe=recipe)
         else:
             obj = model.objects.filter(user=user, recipe__id=pk)
             if obj.exists():
