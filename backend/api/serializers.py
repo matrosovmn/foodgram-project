@@ -123,16 +123,8 @@ class SubscribeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Subscription
-        fields = (
-            "id",
-            "email",
-            "username",
-            "first_name",
-            "last_name",
-            "is_subscribed",
-            "recipes",
-            "recipes_count",
-        )
+        fields = ("id", "email", "username", "first_name",
+                  "last_name", "is_subscribed", "recipes", "recipes_count",)
         read_only_fields = ("is_subscribed", "recipes_count")
 
     def validate(self, data):
@@ -174,18 +166,8 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Recipe
-        fields = (
-            "id",
-            "author",
-            "name",
-            "image",
-            "text",
-            "ingredients",
-            "tags",
-            "cooking_time",
-            "is_favorited",
-            "is_in_cart",
-        )
+        fields = ("id", "author", "name", "image", "text", "ingredients",
+                  "tags", "cooking_time", "is_favorited", "is_in_cart",)
 
     def create_ingredients(self, recipe, ingredients):
         """Создание ингредиентов в промежуточной таблице."""
@@ -238,11 +220,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         )
 
     def validate(self, data):
-        required_fields = (
-            "cooking_time",
-            "tags",
-            "ingredients",
-        )
+        required_fields = ("cooking_time", "tags", "ingredients",)
 
         for field in required_fields:
             if not data.get(field):
