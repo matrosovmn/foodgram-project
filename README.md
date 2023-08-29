@@ -1,10 +1,11 @@
 # praktikum_new_diplom
 
 server {
-    server_name 130.193.53.215 zelema.ru;
+    server_name zelema.ru;
 
     location / {
         proxy_set_header Host $http_host;
+        proxy_set_header X-Forwarded-Proto $scheme;
         proxy_pass http://127.0.0.1:8000;
     }
 
@@ -21,9 +22,9 @@ server {
     } # managed by Certbot
 
     listen 80;
-    server_name 130.193.53.215 zelema.ru;
+    server_name zelema.ru;
     return 404; # managed by Certbot
-
-
 }
+
+
 
