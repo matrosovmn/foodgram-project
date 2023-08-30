@@ -102,7 +102,7 @@ Email: admin@example.com
 Пароль: 123_Patrik  
 
 Логин: user1  
-Email: user1@example.com 
+Email: user1@example.com  
 Пароль: 987_Patrik1  
 
 Логин: user2  
