@@ -11,6 +11,13 @@ class CustomUser(AbstractUser):
         USER = "Пользователь"
         ADMIN = "Администратор"
 
+    role = models.CharField(
+        verbose_name="Роль пользователя",
+        max_length=20,
+        choices=Roles.choices,
+        default=Roles.USER,
+    )
+
     username = models.CharField(
         verbose_name="Логин пользователя",
         max_length=150,
@@ -49,11 +56,11 @@ class CustomUser(AbstractUser):
 
     @property
     def is_admin(self):
-        return self.is_superuser or self.role == CustomUser.Roles.ADMIN
+        return self.is_superuser or self.role == self.Roles.ADMIN
 
     @property
     def is_user(self):
-        return self.is_user or self.role == CustomUser.Roles.USER
+        return self.is_user or self.role == self.Roles.USER
 
     def __str__(self):
         return self.username

@@ -92,6 +92,15 @@ sudo docker compose -f docker-compose.production.yml exec backend python manage.
 ```
 sudo docker compose -f docker-compose.production.yml exec backend python manage.py collectstatic
 ```
+Создаем суперпользователя (админа):
+```
+sudo docker exec -it foodgram_backend python manage.py createsuperuser
+```
+Находясь в папке backend загружаем заготовленный список ингредиентов с единицами измерения и теги в базу данных:
+```
+python manage.py load_data
+python manage.py load_tags
+```
 
 В проекте реализована автоматизация деплоя через CD/CI <br>
 Проект доступен по адресу https://zelema.ru
