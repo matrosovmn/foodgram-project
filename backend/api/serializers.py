@@ -27,10 +27,17 @@ class Base64ImageField(serializers.ImageField):
 
 class UserSerializer(UserCreateSerializer):
     """Сериализатор для работы с пользователями."""
+    is_subscribed = serializers.SerializerMethodField()
 
     class Meta:
         model = User
-        fields = ("id", "username", "first_name", "last_name", "email")
+        fields = ("id", "username", "first_name",
+                  "last_name", "email", "is_subscribed")
+
+    def get_is_subscribed(self, obj):
+        """Проверка подписки."""
+        return Subscription.objects.filter(user=obj,
+                                           author=obj).exists()
 
 
 class UserPasswordSerializer(serializers.Serializer):
@@ -143,8 +150,8 @@ class SubscribeSerializer(serializers.ModelSerializer):
 
     def get_is_subscribed(self, obj):
         """Проверка подписки."""
-        return Subscription.objects.filter(user=obj.user,
-                                           author=obj.author).exists()
+        return Subscription.objects.filter(user=obj,
+                                           author=obj).exists()
 
     def get_recipes_count(self, obj):
         """Подсчет рецептов автора."""
