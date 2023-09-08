@@ -10,6 +10,7 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ReadOnlyModelViewSet
+from rest_framework.viewsets import ModelViewSet
 
 from api.filters import IngredientFilter, RecipeFilter
 from api.pagination import LimitPageNumberPagination
@@ -100,14 +101,14 @@ class UserViewSet(DjoserUserViewSet):
         )
         return self.get_paginated_response(serializer.data)
 
-
-class TagViewSet(ReadOnlyModelViewSet):
+class TagViewSet(ModelViewSet):
+#class TagViewSet(ReadOnlyModelViewSet):
     """Список тэгов."""
 
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
-    permission_classes = (IsAdminOrReadOnly,)
-    pagination_class = None
+    #permission_classes = (IsAdminOrReadOnly,)
+    #pagination_class = None
 
 
 class IngredientViewSet(ReadOnlyModelViewSet):
