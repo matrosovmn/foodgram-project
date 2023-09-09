@@ -105,18 +105,10 @@ python manage.py load_tags
 В проекте реализована автоматизация деплоя через CD/CI <br>
 Проект доступен по адресу https://zelema.ru
 
-Тестовые пользователи <br>
-Логин: AdminYa (superuser)  
+Superuser <br>
+Логин: AdminYa  
 Email: admin@example.com  
 Пароль: 123_Patrik  
-
-Логин: user1  
-Email: user1@example.com  
-Пароль: 987_Patrik1  
-
-Логин: user2  
-Email: user2@example.com  
-Пароль: 987_Patrik2
 
 
 ## Автор
