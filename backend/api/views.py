@@ -106,7 +106,7 @@ class TagViewSet(ReadOnlyModelViewSet):
 
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
-    # permission_classes = (IsAdminOrReadOnly,)
+    permission_classes = None
     # pagination_class = None
 
 
