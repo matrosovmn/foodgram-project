@@ -7,7 +7,7 @@ from django.db.utils import IntegrityError
 
 from recipes.models import Ingredient
 
-FILE_PATH = os.path.join(settings.BASE_DIR, "..", "data", "ingredients.json")
+FILE_PATH = os.path.join(settings.BASE_DIR, "data", "ingredients.json")
 
 
 def import_json_data():
