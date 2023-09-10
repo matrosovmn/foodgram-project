@@ -16,8 +16,9 @@ from api.filters import IngredientFilter, RecipeFilter
 from api.permissions import IsAdminOrReadOnly, IsAuthorOrReadOnly
 from api.serializers import (FavoriteOrSubscribeSerializer,
                              IngredientSerializer, RecipeSerializer,
-                             SubscribeSerializer, TagSerializer,
-                             UserPasswordSerializer, UserSerializer)
+                             RecipeCreateSerializer, SubscribeSerializer,
+                             TagSerializer, UserPasswordSerializer,
+                             UserSerializer)
 from recipes.models import Cart, Favorite, Ingredient, Recipe, Tag
 from users.models import Subscription
 
@@ -215,3 +216,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
         if not user.cart.exists():
             return Response(status=status.HTTP_400_BAD_REQUEST)
         return self.create_cart(request)
+
+    def create(self, request, *args, **kwargs):
+        serializer = RecipeCreateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save(author=request.user)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)

@@ -87,11 +87,14 @@ class IngredientSerializer(serializers.ModelSerializer):
 class AmountIngredientSerializer(serializers.ModelSerializer):
     """Сериализатор модели AmountIngredient."""
 
-    id = serializers.ReadOnlyField(source="ingredient.id")
+    id = serializers.PrimaryKeyRelatedField(
+        queryset=Ingredient.objects.all(),
+    )
     name = serializers.ReadOnlyField(source="ingredient.name")
     measurement_unit = serializers.ReadOnlyField(
         source="ingredient.measurement_unit",
     )
+    amount = serializers.ReadOnlyField(source="amount.amount")
 
     class Meta:
         model = AmountIngredient
@@ -158,16 +161,23 @@ class SubscribeSerializer(serializers.ModelSerializer):
         return Recipe.objects.filter(author=obj.author).count()
 
 
+class RecipeCreateSerializer(serializers.ModelSerializer):
+    """Сериализатор для создания рецептов."""
+
+    class Meta:
+        model = Recipe
+        fields = ("name", "image", "text", "ingredients",
+                  "tags", "cooking_time")
+
+
 class RecipeSerializer(serializers.ModelSerializer):
     """Сериализатор рецепта."""
 
-    tags = TagSerializer(read_only=True, many=True)
+    tags = TagSerializer(many=True)
     image = Base64ImageField()
     author = UserSerializer(read_only=True)
     cooking_time = serializers.IntegerField()
-    ingredients = AmountIngredientSerializer(
-        many=True, read_only=True, source='recipe_ingredients'
-    )
+    ingredients = AmountIngredientSerializer(many=True)
     is_favorited = serializers.SerializerMethodField()
     is_in_cart = serializers.SerializerMethodField()
 
