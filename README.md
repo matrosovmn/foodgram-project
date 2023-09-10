@@ -90,7 +90,7 @@ sudo docker compose -f docker-compose.production.yml exec backend python manage.
 ```
 Активируем статику админки:
 ```
-sudo docker compose -f docker-compose.production.yml exec backend python manage.py collectstatic
+sudo docker compose -f docker-compose.production.yml exec backend python manage.py collectstatic --no-input
 ```
 Создаем суперпользователя (админа):
 ```

@@ -161,13 +161,13 @@ class SubscribeSerializer(serializers.ModelSerializer):
 class RecipeSerializer(serializers.ModelSerializer):
     """Сериализатор рецепта."""
 
-    tags = serializers.PrimaryKeyRelatedField(
-        queryset=Tag.objects.all(), many=True
-    )
+    tags = TagSerializer(read_only=True, many=True)
     image = Base64ImageField()
     author = UserSerializer(read_only=True)
     cooking_time = serializers.IntegerField()
-    ingredients = AmountIngredientSerializer(many=True)
+    ingredients = AmountIngredientSerializer(
+        many=True, read_only=True, source='recipe_ingredients'
+    )
     is_favorited = serializers.SerializerMethodField()
     is_in_cart = serializers.SerializerMethodField()
 
