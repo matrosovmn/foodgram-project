@@ -11,8 +11,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
-from api.filters import IngredientFilter
-# from api.filters import IngredientFilter, RecipeFilter
+from api.filters import IngredientFilter, RecipeFilter
 # from api.pagination import LimitPageNumberPagination
 from api.permissions import IsAdminOrReadOnly, IsAuthorOrReadOnly
 from api.serializers import (FavoriteOrSubscribeSerializer,
@@ -129,7 +128,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     pagination_class = None
     # filter_backends = (DjangoFilterBackend,)
-    # filterset_class = RecipeFilter
+    filterset_class = RecipeFilter
     permission_classes = (IsAuthorOrReadOnly,)
 
     def get_serializer_class(self):
