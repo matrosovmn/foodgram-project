@@ -126,11 +126,15 @@ class RecipeViewSet(viewsets.ModelViewSet):
     """Список рецептов."""
 
     queryset = Recipe.objects.all()
-    serializer_class = RecipeSerializer
     pagination_class = None
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilter
     permission_classes = (IsAuthorOrReadOnly,)
+
+    def get_serializer_class(self):
+        if self.action in ["create", "update", "partial_update"]:
+            return RecipeCreateSerializer
+        return RecipeSerializer
 
     def perform_create(self, serializer):
         """Создает новый рецепт и связывает его с автором."""
@@ -216,9 +220,3 @@ class RecipeViewSet(viewsets.ModelViewSet):
         if not user.cart.exists():
             return Response(status=status.HTTP_400_BAD_REQUEST)
         return self.create_cart(request)
-
-    def create(self, request, *args, **kwargs):
-        serializer = RecipeCreateSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save(author=request.user)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
