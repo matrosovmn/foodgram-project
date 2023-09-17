@@ -135,7 +135,6 @@ dmypy.json
 media/
 static/
 .vscode/
-frontend/
 
 # миграции
 **/migrations/
