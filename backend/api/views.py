@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.http import HttpResponse
-# from django_filters.rest_framework import DjangoFilterBackend
+from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet as DjoserUserViewSet
 from rest_framework import filters, status, viewsets
 from rest_framework.decorators import action
@@ -12,7 +12,6 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ReadOnlyModelViewSet
 
 from api.filters import IngredientFilter, RecipeFilter
-# from api.pagination import LimitPageNumberPagination
 from api.permissions import IsAdminOrReadOnly, IsAuthorOrReadOnly
 from api.serializers import (FavoriteOrSubscribeSerializer,
                              IngredientSerializer, RecipeCreateSerializer,
@@ -20,7 +19,7 @@ from api.serializers import (FavoriteOrSubscribeSerializer,
                              TagSerializer, UserPasswordSerializer,
                              UserSerializer)
 from recipes.models import Cart, Favorite, Ingredient, Recipe, Tag
-from users.models import Subscription
+from users.models import CustomUser, Subscription
 
 User = get_user_model()
 
@@ -63,10 +62,18 @@ class UserViewSet(DjoserUserViewSet):
     )
     def subscribe(self, request, id):
         """Подписаться или отписаться."""
-        author = get_object_or_404(User, id=id)
+        author = get_object_or_404(CustomUser, id=id)
         if request.method == "POST":
             if request.user.id == author.id:
                 raise ValidationError("Нельзя подписаться на себя самого")
+            existing_subscription = Subscription.objects.filter(
+                user=request.user, author=author
+            )
+            if existing_subscription.exists():
+                return Response(
+                    "Вы уже подписаны на этого автора",
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
             new_subscription = Subscription.objects.create(
                 user=request.user, author=author,
             )
@@ -127,7 +134,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     queryset = Recipe.objects.all()
     pagination_class = None
-    # filter_backends = (DjangoFilterBackend,)
+    filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilter
     permission_classes = (IsAuthorOrReadOnly,)
 
@@ -140,22 +147,27 @@ class RecipeViewSet(viewsets.ModelViewSet):
         """Создает новый рецепт и связывает его с автором."""
         serializer.save(author=self.request.user)
 
-    def add_or_remove_favorite_or_cart(self, model, user, pk, add=True):
-
+    def add_favorite_or_cart(self, model, user, pk):
         recipe = get_object_or_404(Recipe, id=pk)
-        if add:
-            model.objects.get_or_create(user=user, recipe=recipe)
-        else:
-            obj = model.objects.filter(user=user, recipe__id=pk)
-            if obj.exists():
-                obj.delete()
-                return Response(status=status.HTTP_204_NO_CONTENT)
+        obj = model.objects.filter(user=user, recipe=recipe)
+
+        if obj.exists():
             return Response(
-                {"errors": "Рецепт уже удален!"},
-                status=status.HTTP_400_BAD_REQUEST,
+                {"errors": "Рецепт уже добавлен в список покупок!"},
+                status=status.HTTP_400_BAD_REQUEST
             )
+
+        model.objects.create(user=user, recipe=recipe)
         serializer = FavoriteOrSubscribeSerializer(recipe)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def remove_favorite_or_cart(self, model, user, pk):
+        obj = model.objects.filter(user=user, recipe__id=pk)
+        if obj.exists():
+            obj.delete()
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response({'errors': 'Рецепт уже удален!'},
+                        status=status.HTTP_400_BAD_REQUEST)
 
     @action(
         methods=["POST", "DELETE"], detail=True,
@@ -164,32 +176,32 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def favorite(self, request, pk=None):
         """Добавляет рецепт в избранное или удаляет его."""
         if request.method == "POST":
-            return self.add_or_remove_favorite_or_cart(
+            return self.add_favorite_or_cart(
                 Favorite, request.user, pk,
             )
-        return self.add_or_remove_favorite_or_cart(Favorite, request.user, pk)
+        return self.remove_favorite_or_cart(Favorite, request.user, pk)
 
     @action(
         methods=["POST", "DELETE"],
         detail=True,
         permission_classes=(IsAuthenticated,),
     )
-    def cart(self, request, pk=None):
+    def shopping_cart(self, request, pk=None):
         """Добавляет рецепт в корзину покупок или удаляет его."""
         if request.method == "POST":
-            return self.add_or_remove_favorite_or_cart(Cart, request.user, pk)
-        return self.add_or_remove_favorite_or_cart(Cart, request.user, pk)
+            return self.add_favorite_or_cart(Cart, request.user, pk)
+        return self.remove_favorite_or_cart(Cart, request.user, pk)
 
     def create_cart(self, request):
         """Формирование корзины покупок для скачивания."""
         cart = Cart.objects.filter(user=request.user).all()
         items = {}
         for item in cart:
-            for recipe_ingredient in item.recipe.recipe_ingredients.all():
-                ingredient = recipe_ingredient.ingredient
+            for amount_ingredient in item.recipe.amount_recipe.all():
+                ingredient = amount_ingredient.ingredient
                 name = ingredient.name
                 measuring_unit = ingredient.measurement_unit
-                amount = recipe_ingredient.amount
+                amount = amount_ingredient.amount
 
                 if name not in items:
                     items[name] = {
@@ -217,6 +229,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def download_shopping_cart(self, request):
         """Скачивает корзину покупок в виде файла."""
         user = request.user
-        if not user.cart.exists():
+        if not user.cart_user.exists():
             return Response(status=status.HTTP_400_BAD_REQUEST)
         return self.create_cart(request)

@@ -146,8 +146,15 @@ class SubscribeSerializer(serializers.ModelSerializer):
 
     def get_is_subscribed(self, obj):
         """Проверка подписки."""
-        return Subscription.objects.filter(user=obj,
-                                           author=obj).exists()
+        user = self.context.get('request').user
+        return Subscription.objects.filter(user=user,
+                                           author=obj.author).exists()
+
+    def get_recipes(self, obj):
+        """Получить рецепты автора."""
+        author = obj.author
+        recipes = Recipe.objects.filter(author=author)
+        return RecipeSerializer(recipes, many=True).data
 
     def get_recipes_count(self, obj):
         """Подсчет рецептов автора."""
@@ -196,10 +203,10 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
     def update(self, obj, validated_data):
         """Обновление рецепта."""
         obj.tags.clear()
-        obj.tags.set(validated_data.get("tags"))
+        obj.tags.set(validated_data.pop("tags"))
         AmountIngredient.objects.filter(recipe=obj).delete()
         self.create_ingredients(
-            recipe=obj, ingredients=validated_data.get("ingredients"),
+            recipe=obj, ingredients=validated_data.pop("ingredients"),
         )
         super().update(obj, validated_data)
         return obj

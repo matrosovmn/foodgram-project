@@ -136,3 +136,6 @@ media/
 static/
 .vscode/
 frontend/
+
+# миграции
+**/migrations/
