@@ -1,15 +1,12 @@
 import base64
 
-from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
 from djoser.serializers import UserCreateSerializer
 from rest_framework import serializers, validators
 
 from recipes.models import (AmountIngredient, Cart, Favorite, Ingredient,
                             Recipe, Tag)
-from users.models import Subscription
-
-User = get_user_model()
+from users.models import CustomUser, Subscription
 
 
 class Base64ImageField(serializers.ImageField):
@@ -30,7 +27,7 @@ class UserSerializer(UserCreateSerializer):
     is_subscribed = serializers.SerializerMethodField()
 
     class Meta:
-        model = User
+        model = CustomUser
         fields = ("id", "username", "first_name",
                   "last_name", "email", "is_subscribed")
 

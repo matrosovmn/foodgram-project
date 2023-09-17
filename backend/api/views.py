@@ -1,4 +1,3 @@
-from django.contrib.auth import get_user_model
 from django.http import HttpResponse
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet as DjoserUserViewSet
@@ -21,8 +20,6 @@ from api.serializers import (FavoriteOrSubscribeSerializer,
                              UserSerializer)
 from recipes.models import Cart, Favorite, Ingredient, Recipe, Tag
 from users.models import CustomUser, Subscription
-
-User = get_user_model()
 
 
 class UpdatePasswordView(APIView):
@@ -50,7 +47,7 @@ class UpdatePasswordView(APIView):
 class UserViewSet(DjoserUserViewSet):
     """Пользователи и подписки."""
 
-    queryset = User.objects.all()
+    queryset = CustomUser.objects.all()
     serializer_class = UserSerializer
     filter_backends = (filters.SearchFilter,)
     search_fields = ("username", "email")
