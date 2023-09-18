@@ -131,7 +131,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
     """Список рецептов."""
 
     queryset = Recipe.objects.all()
-    serializer_class = RecipeSerializer
     pagination_class = LimitPageNumberPagination
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilter

@@ -212,17 +212,24 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
         super().update(obj, validated_data)
         return obj
 
+    def validate(self, data):
+        required_fields = ("cooking_time", "tags", "ingredients",)
+        for field in required_fields:
+            if not data.get(field):
+                raise serializers.ValidationError(
+                    f"Необходимо указать поле {field}.",
+                )
+        return data
+
 
 class RecipeSerializer(serializers.ModelSerializer):
-    """Сериализатор рецепта."""
+    """Сериализатор отображения рецепта."""
 
-    tags = serializers.PrimaryKeyRelatedField(
-        queryset=Tag.objects.all(), many=True
-    )
+    tags = TagSerializer(many=True)
     image = Base64ImageField()
     author = UserSerializer(read_only=True)
     cooking_time = serializers.IntegerField()
-    ingredients = AmountIngredientSerializer(many=True)
+    ingredients = serializers.SerializerMethodField()
     is_favorited = serializers.SerializerMethodField()
     is_in_cart = serializers.SerializerMethodField()
 
@@ -230,6 +237,11 @@ class RecipeSerializer(serializers.ModelSerializer):
         model = Recipe
         fields = ("id", "author", "name", "image", "text", "ingredients",
                   "tags", "cooking_time", "is_favorited", "is_in_cart",)
+
+    def get_ingredients(self, obj):
+        """Получение ингредиентов."""
+        ingredients = AmountIngredient.objects.filter(recipe=obj)
+        return AmountIngredientSerializer(ingredients, many=True).data
 
     def get_is_favorited(self, obj):
         """Проверка рецепта в списке избранного."""
@@ -246,13 +258,3 @@ class RecipeSerializer(serializers.ModelSerializer):
             user.is_authenticated
             and Cart.objects.filter(user=user, recipe=obj).exists()
         )
-
-    def validate(self, data):
-        required_fields = ("cooking_time", "tags", "ingredients",)
-
-        for field in required_fields:
-            if not data.get(field):
-                raise serializers.ValidationError(
-                    f"Необходимо указать поле {field}.",
-                )
-        return data
