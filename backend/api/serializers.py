@@ -149,9 +149,13 @@ class SubscribeSerializer(serializers.ModelSerializer):
 
     def get_recipes(self, obj):
         """Получить рецепты автора."""
-        author = obj.author
-        recipes = Recipe.objects.filter(author=author)
-        return RecipeSerializer(recipes, many=True).data
+        request = self.context.get('request')
+        recipes_limit = request.GET.get('recipes_limit')
+        recipes = Recipe.objects.filter(author=obj.author)
+        if recipes_limit:
+            recipes = recipes[:int(recipes_limit)]
+        serializer = FavoriteOrSubscribeSerializer(recipes, many=True)
+        return serializer.data
 
     def get_recipes_count(self, obj):
         """Подсчет рецептов автора."""
